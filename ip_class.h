@@ -21,15 +21,15 @@ class ip_class {
     static auto vt_filter(ip_list_iter begin, ip_list_iter end, ip_t::size_type oct_ind, T val, Args... args) {
 
         //ищем первый ip, октет которого меньше, либо равен искомому значению
-        auto low_iter = std::upper_bound(begin, end, ip_t{}, [oct_ind, val](const auto &, const auto & it) {
-            return it[oct_ind] <= val;
+        auto low_iter = std::lower_bound(begin, end, ip_t{}, [oct_ind, val](const auto & it, const auto &) {
+            return it[oct_ind] > val;
         });
         //проверяем, что у найденного ip октет равен. Иначе - результат пустой.
         if((*low_iter)[oct_ind] != val) return filter_res(begin, begin);
 
         //ищем первый ip, октет которого меньше искомого значения
         auto upper_iter =
-                std::upper_bound(begin, end, ip_t{}, [oct_ind, val](const auto &, const auto & it) {
+                std::upper_bound(low_iter, end, ip_t{}, [oct_ind, val](const auto &, const auto & it) {
             return it[oct_ind] < val;
         });
 
