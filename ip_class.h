@@ -11,36 +11,47 @@ using ip_list = std::vector<ip_t>;
 using ip_list_iter = ip_list::iterator;
 using filter_res = std::pair<ip_list_iter, ip_list_iter>;
 
+#define log_enable false
+
+#if log_enable
+static auto ip_out = [](ip_t val) {
+    std::string str;
+   for(const auto & el : val)
+       str += std::to_string(el) + " ";
+   return str;
+};
+#endif
+
 class ip_class {
 
-    static auto vt_filter(ip_list_iter begin, ip_list_iter end, ip_t::size_type) {
-        return filter_res(begin, end);
-    }
-
-    template <typename T, typename ...Args>
-    static auto vt_filter(ip_list_iter begin, ip_list_iter end, ip_t::size_type oct_ind, T val, Args... args) {
-
-        //ищем первый ip, октет которого меньше, либо равен искомому значению
-        auto low_iter = std::lower_bound(begin, end, ip_t{}, [oct_ind, val](const auto & it, const auto &) {
-            return it[oct_ind] > val;
-        });
-        //проверяем, что у найденного ip октет равен. Иначе - результат пустой.
-        if((*low_iter)[oct_ind] != val) return filter_res(begin, begin);
-
-        //ищем первый ip, октет которого меньше искомого значения
-        auto upper_iter =
-                std::upper_bound(low_iter, end, ip_t{}, [oct_ind, val](const auto &, const auto & it) {
-            return it[oct_ind] < val;
-        });
-
-        return vt_filter(low_iter, upper_iter, oct_ind+1, args...);
-    }
-
-public:
+public:    
 
     template <typename ...Args>
     static auto filter(ip_list & list, Args... args) {
-        return vt_filter(list.begin(), list.end(), 0, args...);
+        ip_t ip_low = {args...};
+        ip_t ip_upper = ip_low;
+        ip_low.insert(  ip_low.end(),   static_cast<size_t>(4 - ip_low.size()),   0);
+        ip_upper.insert(ip_upper.end(), static_cast<size_t>(4 - ip_upper.size()), 255);
+
+        //ищем первый ip, который меньше либо равен искомому
+        auto low_iter = std::lower_bound(list.begin(), list.end(), ip_upper, [](const auto & it, const auto &val) {
+            auto cond = val < it;
+            if constexpr(log_enable) std::cout << "it " << ip_out(it) << ", val " << ip_out(val) <<
+                         "cond is " << ( cond ? "true" : "false") << std::endl;
+            return cond;
+        });
+        if constexpr(log_enable) std::cout << "low is " << ip_out(*low_iter) << std::endl;
+
+        //ищем первый ip, который меньше искомого
+        auto upper_iter = std::upper_bound(list.begin()/*low_iter*/, list.end(), ip_low,
+                                           [](const auto & val, const auto & it) {
+            auto cond = it < val;
+            if constexpr(log_enable) std::cout << "it " << ip_out(it) << ", val " << ip_out(val) <<
+                         "cond is " << ( cond ? "true" : "false") << std::endl;
+            return cond;
+        });
+        if constexpr(log_enable) std::cout << "upper is " << ip_out(*upper_iter) << std::endl;
+        return filter_res(low_iter, upper_iter);
     }
 
     static auto filter_any(ip_list list, int val) {
