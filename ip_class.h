@@ -13,16 +13,16 @@ using filter_res = std::pair<ip_list_iter, ip_list_iter>;
 
 #define log_enable false
 
+class ip_class {
+
 #if log_enable
-static auto ip_out = [](ip_t val) {
+static auto ip_out(ip_t val) {
     std::string str;
    for(const auto & el : val)
        str += std::to_string(el) + " ";
    return str;
-};
+}
 #endif
-
-class ip_class {
 
 public:    
 
@@ -34,7 +34,8 @@ public:
         ip_upper.insert(ip_upper.end(), static_cast<size_t>(4 - ip_upper.size()), 255);
 
         //ищем первый ip, который меньше либо равен искомому
-        auto low_iter = std::lower_bound(list.begin(), list.end(), ip_upper, [](const auto & it, const auto &val) {
+        auto low_iter = std::lower_bound(list.begin(), list.end(), ip_upper,
+                                         [](const auto & it, const auto &val) {
             auto cond = val < it;
             if constexpr(log_enable) std::cout << "it " << ip_out(it) << ", val " << ip_out(val) <<
                          "cond is " << ( cond ? "true" : "false") << std::endl;
