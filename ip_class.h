@@ -43,7 +43,7 @@ public:
         if constexpr(log_enable) std::cout << "low is " << ip_out(*low_iter) << std::endl;
 
         //ищем первый ip, который меньше искомого
-        auto upper_iter = std::upper_bound(list.begin()/*low_iter*/, list.end(), ip_low,
+        auto upper_iter = std::upper_bound(low_iter, list.end(), ip_low,
                                            [](const auto & val, const auto & it) {
             auto cond = it < val;
             if constexpr(log_enable) std::cout << "it " << ip_out(it) << ", val " << ip_out(val) <<
