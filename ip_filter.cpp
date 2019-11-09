@@ -73,8 +73,7 @@ int main()
         };
 
         // reverse lexicographically sort
-        std::sort(ip_pool.begin(), ip_pool.end(),
-                  [](auto & ip1, auto & ip2) { return ip1 > ip2; });
+        std::sort(ip_pool.begin(), ip_pool.end(), std::greater<ip_t>());
         ip_list_out(ip_pool.begin(), ip_pool.end());
 
         if(debug) std::cout << std::endl << "filter 1:" << std::endl;

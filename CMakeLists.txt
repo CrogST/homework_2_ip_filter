@@ -8,6 +8,7 @@ project(h02_ip_filter VERSION 0.0.0$ENV{TRAVIS_BUILD_NUMBER})
 
 add_executable(ip_filter
     ip_filter.cpp
+    ip_class.h
     .travis.yml
 )
 
