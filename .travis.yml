@@ -10,7 +10,6 @@ script:
 - cmake --build .
 - cmake --build . --target tests
 - cmake --build . --target package
-# - ctest --output-on-failure
 - printenv
 deploy:
   provider: script

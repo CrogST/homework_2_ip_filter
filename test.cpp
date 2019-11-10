@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(vt_filter_test)
 BOOST_AUTO_TEST_CASE(ip_filter_any_test)
 {
     ip_list list = {{1,2,3, 4}};
-    BOOST_CHECK(ip_class::filter_any(list, 0).size() == 1);
+    BOOST_CHECK(ip_class::filter_any(list, 0).size() == 0);
     BOOST_CHECK(ip_class::filter_any(list, 1).size() == 1);
     BOOST_CHECK(ip_class::filter_any(list, 2).size() == 1);
     BOOST_CHECK(ip_class::filter_any(list, 3).size() == 1);
