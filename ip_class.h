@@ -2,11 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 
-using ip_t = std::vector<int>;
+using ip_t = std::array<uint8_t, 4>;
 using ip_list = std::vector<ip_t>;
 using ip_list_iter = ip_list::iterator;
 using filter_res = std::pair<ip_list_iter, ip_list_iter>;
@@ -28,10 +29,12 @@ public:
 
     template <typename ...Args>
     static auto filter(ip_list & list, Args... args) {
-        ip_t ip_low = {args...};
-        ip_t ip_upper = ip_low;
-        ip_low.insert(  ip_low.end(),   static_cast<size_t>(4 - ip_low.size()),   0);
-        ip_upper.insert(ip_upper.end(), static_cast<size_t>(4 - ip_upper.size()), 255);
+        ip_t ip_low = {static_cast<uint8_t>(args)...};
+        ip_t ip_upper = {static_cast<uint8_t>(args)...};
+        for(auto i = sizeof...(args); i < 4; i++) {
+            ip_low[i] = 0;
+            ip_upper[i] = 255;
+        }
 
         //ищем первый ip, который меньше либо равен искомому
         auto low_iter = std::lower_bound(list.begin(), list.end(), ip_upper,

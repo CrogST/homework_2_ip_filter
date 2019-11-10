@@ -42,8 +42,9 @@ int main()
                 auto v = split(line, '\t');
                 auto ip_str = split(v.at(0), '.');
                 ip_t ip;
+                unsigned int cnt = 0;
                 for(const auto & s : ip_str)
-                    ip.push_back(std::stoi(s));
+                    ip[cnt++] = static_cast<uint8_t>(std::stoi(s));
                 ip_pool.push_back(ip);
             }
         } else { //отладка
@@ -63,13 +64,11 @@ int main()
 
         //вывод списка адресов
         auto ip_list_out = [](auto start, auto stop) {
-            for(auto ip = start; ip < stop; ++ip)
-            {
-                for(auto ip_oct = ip->begin(); ip_oct != ip->end(); ++ip_oct)
-                {
-                    if (ip_oct != ip->begin())
+            for(auto & ip = start; ip < stop; ++ip) {
+                for(const auto & oct : *ip) {
+                    if (&oct != ip->begin())
                         std::cout << ".";
-                    std::cout << *ip_oct;
+                    std::cout << static_cast<int>(oct);
                 }
                 std::cout << std::endl;
             }
