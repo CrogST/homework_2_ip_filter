@@ -8,7 +8,7 @@ addons:
 script:
 - cmake .
 - cmake --build .
-- cmake --build . --target tests
+- cmake --build . --target test
 - cmake --build . --target package
 - printenv
 deploy:
