@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE ip_filter_test_module
 
 #include "ip_class.h"
+#include <map>
 
 #include <boost/test/unit_test.hpp>
 
@@ -19,7 +20,7 @@ BOOST_AUTO_TEST_CASE(vt_filter_test)
         {46,70,255,254},
         {1,1,3,3},
         {2,3,3,1}
-    };
+    };    
     std::sort(list.begin(), list.end(), std::greater<ip_t>());
 
     auto parse_res =[](auto res) {
@@ -46,6 +47,12 @@ BOOST_AUTO_TEST_CASE(ip_filter_any_test)
     BOOST_CHECK(ip_class::filter_any(list, 2).size() == 1);
     BOOST_CHECK(ip_class::filter_any(list, 3).size() == 1);
     BOOST_CHECK(ip_class::filter_any(list, 4).size() == 1);
+}
+
+BOOST_AUTO_TEST_CASE(clang_map_try_emplace_test)
+{
+    std::map<int, int> m;
+    m.try_emplace(1, 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
