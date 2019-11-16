@@ -49,10 +49,4 @@ BOOST_AUTO_TEST_CASE(ip_filter_any_test)
     BOOST_CHECK(ip_class::filter_any(list, 4).size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE(clang_map_try_emplace_test)
-{
-    std::map<int, int> m;
-    m.try_emplace(1, 1);
-}
-
 BOOST_AUTO_TEST_SUITE_END()
